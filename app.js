@@ -4,6 +4,8 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const passport = require('passport');
 
 const routes = require('./routes/main');
 const secureRoutes = require('./routes/secure');
@@ -23,8 +25,12 @@ mongoose.connection.on('connected', () => {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(cookieParser());
+
+require('./auth/auth');
+
 app.use('/', routes);
-app.use('/', secureRoutes);
+app.use('/', passport.authenticate('jwt', { session: false}), secureRoutes);
 
 app.use((req, res, next) => {
     res.status(404);

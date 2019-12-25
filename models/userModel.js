@@ -23,12 +23,14 @@ const UserSchema = new Schema({
     }
 });
 
-UserSchema.pre('save', async function(next) {
+// Note not to use () => here since we need the 'this' scoped to the context the function is called in not declared in
+UserSchema.pre('save', async function(next) { 
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
     next();
 });
 
+// Note not to use () => here since we need the 'this' scoped to the context the function is called in not declared in
 UserSchema.methods.isValidPassword = async function(password) {
     const user = this;
     const compare = await bcrypt.compare(password, user.password);
