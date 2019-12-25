@@ -1,0 +1,6 @@
+This tutorial is set up using MongoDB Atlas
+
+Please visit https://cloud.mongodb.com/ to set up your own cluster to use.
+
+After setting up a user with a password (and probably limiting your cluster to yoru local ip), you can add a .env file with the parameter
+MONGO_CONNECTION_URL=<Get the connection string from atlas and put it here>
