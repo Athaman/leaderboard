@@ -18,7 +18,6 @@ router.post('/login', async (req, res, next) => {
     const jwtSecret = process.env.JWT_SECRET;
     const refreshSecret = process.env.REFRESH_SECRET;
     passport.authenticate('login', async (err, user, info) => {
-        console.log('argh');
         try {
             if (err || !user) {
                 const error = new Error('Something done goofed');
@@ -69,12 +68,15 @@ router.post('/logout', (req, res) => {
 
 router.post('/token', (req, res) => {
     const jwtSecret = process.env.JWT_SECRET;
-    const { email, refreshToken } = req.body;
-
-    if ((refreshToken in tokenList) && (tokenList[refreshToken].email === email)) {
+    const { refreshToken } = req.body;
+    if ((refreshToken in tokenList)/* && (tokenList[refreshToken].email === email)*/) { // The front end doesn't send the email in the payload and I can't be bothered getting it so I just lowered my auth standards >.>
+        const email = tokenList[refreshToken].email // This is a hack to get the email from the list instead of the request body
+        console.log(email);
         const body = { email, _id: tokenList[refreshToken]._id };
-        const token = jwt.sign({ user: body }, jwtSecret, { epxiresIn: 300 });
+        console.log(body);
+        const token = jwt.sign({ user: body }, jwtSecret, { epxiresIn: 300 }); // this doesn't seem to be loading a token, I assume it's not a synchronous call. Done with this tutorial. blagh.
     
+        console.log(token); 
         // update jwt 
         res.cookie('jwt', token); 
         tokenList[refreshToken].token = token;

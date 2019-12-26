@@ -29,6 +29,15 @@ app.use(cookieParser());
 
 require('./auth/auth');
 
+app.get('/game.html', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.sendFile(__dirname + '/public/game.html');
+})
+
+app.use(express.static(__dirname + '/public'));
+
+app.get('/', (req, res) => { // caution tutorial showed using function not arrow
+    res.sendFile(__dirname + '/index.html');
+})
 app.use('/', routes);
 app.use('/', passport.authenticate('jwt', { session: false}), secureRoutes);
 
